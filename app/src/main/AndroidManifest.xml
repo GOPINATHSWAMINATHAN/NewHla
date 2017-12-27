@@ -9,10 +9,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".Integrate"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".Integrate"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -35,9 +35,10 @@
         <activity android:name=".CustomerMapActivity" />
         <activity android:name=".CustomerSettingsActivity" />
         <activity android:name=".HistoryActivity" />
-        <activity android:name=".ChoosePayment"/>
+        <activity android:name=".ChoosePayment" />
         <activity android:name=".HistorySingleActivity" />
-        <activity android:name=".CustomerLoginActivity"></activity>
+        <activity android:name=".CustomerLoginActivity" />
+        <activity android:name=".RideLater"></activity>
     </application>
 
 </manifest>

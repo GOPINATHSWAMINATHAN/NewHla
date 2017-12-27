@@ -87,7 +87,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     LocationRequest mLocationRequest;
     private final static int MY_PERMISSION_FINE_LOCATION = 101;
     private final static int PLACE_PICKER_REQUEST = 1;
-    private Button mLogout, mRequest, mSettings, mHistory;
+    private Button mLogout, mRequest, mSettings, mHistory, rideLater;
     private LatLng pickupLocation;
     private Boolean requestBol = false;
     private Marker pickupMarker;
@@ -126,14 +126,12 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         } else {
             mapFragment.getMapAsync(this);
         }
-
+        rideLater = (Button) findViewById(R.id.rideLater);
         pickUpMarker = findViewById(R.id.pickup_marker);
-        if(pickupLocation==null&&destinationLatLng==null) {
+        if (pickupLocation == null && destinationLatLng == null) {
             configureCameraIdle();
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(),"Please Wait!",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Please Wait!", Toast.LENGTH_LONG).show();
         }
         destinationLatLng = new LatLng(0.0, 0.0);
 
@@ -411,16 +409,16 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     loc2.setLatitude(driverLatLng.latitude);
                     loc2.setLongitude(driverLatLng.longitude);
 
-                    float distance = loc1.distanceTo(loc2)*0.001f;
+                    float distance = loc1.distanceTo(loc2) * 0.001f;
 
                     if (distance < 100) {
                         mRequest.setText("Driver's Here");
                     } else {
-                        mRequest.setText("Driver Found: " + String.valueOf(distance)+"Km");
+                        mRequest.setText("Driver Found: " + String.valueOf(distance) + "Km");
                     }
 
 
-                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car)));
+                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your driver").icon(BitmapDescriptorFactory.fromResource(R.drawable.drivercar)));
                 }
 
             }
@@ -451,7 +449,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         mDriverName.setText(dataSnapshot.child("name").getValue().toString());
                     }
                     if (dataSnapshot.child("phone") != null) {
-                        driverPhoneNo=dataSnapshot.child("phone").getValue().toString();
+                        driverPhoneNo = dataSnapshot.child("phone").getValue().toString();
                         mDriverPhone.setText(dataSnapshot.child("phone").getValue().toString());
                     }
                     if (dataSnapshot.child("car") != null) {
@@ -537,7 +535,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         }
 
         Teliver.stopTracking(name);
-        startActivity(new Intent(getApplicationContext(),ChoosePayment.class));
+        startActivity(new Intent(getApplicationContext(), ChoosePayment.class));
         mRequest.setText("call Hla");
 
         mDriverInfo.setVisibility(View.GONE);
@@ -700,7 +698,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         builder.setTitle("Enable GPS");
         builder.setMessage("Please enable GPS");
         builder.setInverseBackgroundForced(true);
-        builder.setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(
                         new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
@@ -749,8 +747,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     }
 
 
-
-
     private void configureCameraIdle() {
         onCameraIdleListener = new GoogleMap.OnCameraIdleListener() {
             @Override
@@ -764,9 +760,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         String country = addressList.get(0).getCountryName();
                         if (!locality.isEmpty() && !country.isEmpty()) {
                             //It gives the pickuplocation address.
-                                pickupLocation=latLng;
+                            pickupLocation = latLng;
 
-                           // Toast.makeText(getApplicationContext(), ""+pickupLocation, Toast.LENGTH_LONG).show();
+                            // Toast.makeText(getApplicationContext(), ""+pickupLocation, Toast.LENGTH_LONG).show();
                         }
                     }
                 } catch (IOException e) {
@@ -785,8 +781,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         }
     }
 
-    public void startTracking()
-    {
+    public void startTracking() {
 
         DatabaseReference mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID);
         mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
