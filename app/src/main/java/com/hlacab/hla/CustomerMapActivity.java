@@ -220,7 +220,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     getWindowManager().getDefaultDisplay().getSize(displaySize);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, displaySize.x, 250, 30));
                     mRequest.setText("Getting your Driver....");
-
+                    pickUpMarker.setVisibility(View.INVISIBLE);
                     getClosestDriver();
                 } else {
                     pickUpMarker.setVisibility(View.VISIBLE);
@@ -411,12 +411,12 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     loc2.setLatitude(driverLatLng.latitude);
                     loc2.setLongitude(driverLatLng.longitude);
 
-                    float distance = loc1.distanceTo(loc2);
+                    float distance = loc1.distanceTo(loc2)*0.001f;
 
                     if (distance < 100) {
                         mRequest.setText("Driver's Here");
                     } else {
-                        mRequest.setText("Driver Found: " + String.valueOf(distance));
+                        mRequest.setText("Driver Found: " + String.valueOf(distance)+"Km");
                     }
 
 
