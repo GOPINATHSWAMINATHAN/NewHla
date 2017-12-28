@@ -120,7 +120,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
+                    <Button
+                        android:id="@+id/trip_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cancel"
+                        android:background="#e2933f"
+                        android:layout_gravity="right"/>
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/driverProfileImage"
                         android:layout_width="100sp"

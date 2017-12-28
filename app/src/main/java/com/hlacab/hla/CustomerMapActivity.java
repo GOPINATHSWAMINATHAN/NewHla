@@ -96,6 +96,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private LatLng destinationLatLng;
     private AddressResultReceiver mResultReceiver;
     private LinearLayout mDriverInfo;
+    Button tripCancel;
     String name;
     private ImageView mDriverProfileImage;
     private TextView mDriverName, mDriverPhone, mDriverCar;
@@ -120,13 +121,20 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        fab = findViewById(R.id.call_Driver);
+        tripCancel=(Button)findViewById(R.id.trip_cancel);
+                fab = findViewById(R.id.call_Driver);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         } else {
             mapFragment.getMapAsync(this);
         }
         rideLater = (Button) findViewById(R.id.rideLater);
+        rideLater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CustomerMapActivity.this,RideLater.class));
+            }
+        });
         pickUpMarker = findViewById(R.id.pickup_marker);
         if (pickupLocation == null && destinationLatLng == null) {
             configureCameraIdle();
@@ -184,6 +192,18 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
+//        tripCancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("customerRequest");
+//                driverRef.removeValue();
+//                Intent intent = getIntent();
+//                finish();
+//                startActivity(intent);
+//
+//            }
+//        });
         mRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -412,8 +432,10 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     float distance = loc1.distanceTo(loc2) * 0.001f;
 
                     if (distance < 100) {
+                        mRequest.setEnabled(false);
                         mRequest.setText("Driver's Here");
                     } else {
+                        mRequest.setEnabled(false);
                         mRequest.setText("Driver Found: " + String.valueOf(distance) + "Km");
                     }
 

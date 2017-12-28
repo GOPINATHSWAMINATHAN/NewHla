@@ -40,7 +40,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="40sp">
-
+            <Button
+                android:id="@+id/trip_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:background="#e2933f"
+                android:layout_gravity="right"/>
             <TextView
                 android:id="@+id/driverName"
                 android:layout_width="wrap_content"
@@ -73,6 +79,7 @@
                 android:layout_marginBottom="10dp"
                 android:numStars="5"
                 android:stepSize="0.1" />
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
