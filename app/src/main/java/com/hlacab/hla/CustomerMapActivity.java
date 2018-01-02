@@ -13,11 +13,15 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.Manifest;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -41,6 +45,7 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.ads.internal.gmsg.HttpClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -74,10 +79,18 @@ import com.teliver.sdk.models.MarkerOption;
 import com.teliver.sdk.models.TrackingBuilder;
 import com.teliver.sdk.models.TripBuilder;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -113,6 +126,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     FloatingActionButton fab;
     String driverPhoneNo;
 
+    public static final int REQUEST_CALL = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,8 +136,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        tripCancel=(Button)findViewById(R.id.trip_cancel);
-                fab = findViewById(R.id.call_Driver);
+        tripCancel = (Button) findViewById(R.id.trip_cancel);
+        fab = findViewById(R.id.call_Driver);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         } else {
@@ -132,7 +147,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         rideLater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(CustomerMapActivity.this,RideLater.class));
+                startActivity(new Intent(CustomerMapActivity.this, RideLater.class));
             }
         });
         pickUpMarker = findViewById(R.id.pickup_marker);
@@ -175,20 +190,23 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + driverPhoneNo.trim()));
-                if (ActivityCompat.checkSelfPermission(CustomerMapActivity.this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
 
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
+                            //Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+                        }
+                    }
+
+
+
+                } else {
+                    Intent inten = new Intent(Intent.ACTION_CALL);
+                    inten.setData(Uri.parse("tel:+9660580286019"));
+                    inten.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(inten);
                 }
-                startActivity(intent);
             }
         });
 
@@ -429,8 +447,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     loc2.setLatitude(driverLatLng.latitude);
                     loc2.setLongitude(driverLatLng.longitude);
 
-                    float distance = loc1.distanceTo(loc2) * 0.001f;
-
+                    float distance = loc1.distanceTo(loc2) / 0.62137f;
+                    Toast.makeText(getApplicationContext(), "Distance is " + distance, Toast.LENGTH_LONG).show();
                     if (distance < 100) {
                         mRequest.setEnabled(false);
                         mRequest.setText("Driver's Here");
@@ -700,7 +718,34 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 break;
             }
         }
+
+        if (requestCode == REQUEST_CALL) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent inten = new Intent(Intent.ACTION_CALL);
+                inten.setData(Uri.parse("tel:+919843831580"));
+                inten.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(inten);
+            } else {
+                Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
+
+
+
+
 
     @Override
     protected void onResume() {
@@ -828,4 +873,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
         });
     }
+
+
 }

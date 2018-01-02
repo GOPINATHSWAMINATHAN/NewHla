@@ -117,65 +117,74 @@ public class CustomerLoginActivity extends AppCompatActivity {
                 final String name = mName.getText().toString();
                 final String phone = mPhone.getText().toString();
 
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(CustomerLoginActivity.this, "sign up error", Toast.LENGTH_SHORT).show();
-                        } else {
-                            String user_id = mAuth.getCurrentUser().getUid();
-                            final DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(user_id);
-                            current_user_db.setValue(true);
-                            Map userInfo = new HashMap();
-                            userInfo.put("name", name);
-                            userInfo.put("phone", phone);
-                            userInfo.put("email", email);
-                            userInfo.put("password", password);
-                            current_user_db.updateChildren(userInfo);
+                if (email != null && password != null && name != null && phone != null) {
 
-                            if (resultUri != null) {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(CustomerLoginActivity.this, "sign up error", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String user_id = mAuth.getCurrentUser().getUid();
+                                final DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(user_id);
+                                current_user_db.setValue(true);
+                                Map userInfo = new HashMap();
+                                userInfo.put("name", name);
+                                userInfo.put("phone", phone);
+                                userInfo.put("email", email);
+                                userInfo.put("password", password);
+                                current_user_db.updateChildren(userInfo);
 
-                                StorageReference filePath = FirebaseStorage.getInstance().getReference().child("profile_images").child(user_id);
-                                Bitmap bitmap = null;
-                                try {
-                                    bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                if (resultUri != null) {
+
+                                    StorageReference filePath = FirebaseStorage.getInstance().getReference().child("profile_images").child(user_id);
+                                    Bitmap bitmap = null;
+                                    try {
+                                        bitmap = MediaStore.Images.Media.getBitmap(getApplication().getContentResolver(), resultUri);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+                                    byte[] data = baos.toByteArray();
+                                    UploadTask uploadTask = filePath.putBytes(data);
+
+                                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            finish();
+                                            return;
+                                        }
+                                    });
+                                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                                            Map newImage = new HashMap();
+
+                                            newImage.put("profileImageUrl", downloadUrl.toString());
+                                            if (newImage.size() > 0)
+
+                                                current_user_db.updateChildren(newImage);
+                                            else
+                                                Toast.makeText(getApplicationContext(), "Please select an image", Toast.LENGTH_LONG).show();
+                                            finish();
+                                            return;
+                                        }
+                                    });
+                                } else {
+                                    finish();
                                 }
 
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
-                                byte[] data = baos.toByteArray();
-                                UploadTask uploadTask = filePath.putBytes(data);
 
-                                uploadTask.addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        finish();
-                                        return;
-                                    }
-                                });
-                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
-
-                                        Map newImage = new HashMap();
-                                        newImage.put("profileImageUrl", downloadUrl.toString());
-                                        current_user_db.updateChildren(newImage);
-
-                                        finish();
-                                        return;
-                                    }
-                                });
-                            } else {
-                                finish();
                             }
-
-
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please fill all the details!", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
