@@ -210,18 +210,16 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
-//        tripCancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//                DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("customerRequest");
-//                driverRef.removeValue();
-//                Intent intent = getIntent();
-//                finish();
-//                startActivity(intent);
-//
-//            }
-//        });
+        tripCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               tripCancel();
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+
+            }
+        });
         mRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -313,6 +311,16 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 // TODO: Handle the error.
             }
         });
+
+    }
+
+    public void tripCancel()
+    {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest").child(userId);
+        ref.removeValue();
+
 
     }
 
@@ -873,6 +881,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
         });
     }
+
+
 
 
 }
