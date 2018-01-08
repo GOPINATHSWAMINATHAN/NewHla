@@ -349,6 +349,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                                 if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
                                     Map<String, Object> driverMap = (Map<String, Object>) dataSnapshot.getValue();
                                     if (driverFound) {
+
                                         return;
                                     }
 
@@ -370,7 +371,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                                         getHasRideEnded();
                                         mRequest.setText("Looking for Driver Location....");
                                     }
+
                                 }
+
                             }
 
                             @Override
