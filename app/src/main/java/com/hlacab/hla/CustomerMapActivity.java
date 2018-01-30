@@ -109,7 +109,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private LatLng destinationLatLng;
     private AddressResultReceiver mResultReceiver;
     private LinearLayout mDriverInfo;
-    Button tripCancel;
+    Button tripCancel, close_details;
     String name;
     private ImageView mDriverProfileImage;
     private TextView mDriverName, mDriverPhone, mDriverCar;
@@ -135,7 +135,13 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
+        close_details = findViewById(R.id.close_details);
+        close_details.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDriverInfo.setVisibility(View.GONE);
+            }
+        });
         tripCancel = (Button) findViewById(R.id.trip_cancel);
         fab = findViewById(R.id.call_Driver);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -200,7 +206,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     }
 
 
-
                 } else {
                     Intent inten = new Intent(Intent.ACTION_CALL);
                     inten.setData(Uri.parse("tel:+9660580286019"));
@@ -213,7 +218,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         tripCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               tripCancel();
+                tripCancel();
                 Intent intent = getIntent();
                 finish();
                 startActivity(intent);
@@ -314,8 +319,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
     }
 
-    public void tripCancel()
-    {
+    public void tripCancel() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest").child(userId);
@@ -755,9 +759,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     }
 
 
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -884,8 +885,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
         });
     }
-
-
 
 
 }

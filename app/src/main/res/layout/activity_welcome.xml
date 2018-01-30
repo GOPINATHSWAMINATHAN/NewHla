@@ -17,4 +17,5 @@
         android:text="Get Started"
         android:layout_marginTop="450dp"
         android:textColor="#fff" />
+
 </LinearLayout>

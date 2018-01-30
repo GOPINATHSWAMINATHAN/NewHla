@@ -84,7 +84,6 @@ public class FetchAddressIntentService extends IntentService {
         // to alter the presentation of information such as numbers or dates to suit the conventions
         // in the region they describe.
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-
         // Address found using the Geocoder.
         List<Address> addresses = null;
 
