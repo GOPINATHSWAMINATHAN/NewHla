@@ -57,6 +57,7 @@
                     android:background="#123"
                     android:text="Settings"
                     android:textColor="#fff" />
+
             </LinearLayout>
 
             <LinearLayout
