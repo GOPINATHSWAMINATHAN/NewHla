@@ -111,7 +111,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private String destination, requestService;
     private LatLng destinationLatLng;
     private LinearLayout mDriverInfo;
-    Button tripCancel, close_details;
+    Button tripCancel;
     String name;
     private ImageView mDriverProfileImage;
     private TextView mDriverName, mDriverPhone, mDriverCar;
@@ -139,16 +139,15 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        close_details = findViewById(R.id.close_details);
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "Nunito-Regular.ttf");
 
 
-        close_details.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDriverInfo.setVisibility(View.GONE);
-            }
-        });
+//        close_details.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mDriverInfo.setVisibility(View.GONE);
+//            }
+//        });
         tripCancel = (Button) findViewById(R.id.trip_cancel);
         fab = findViewById(R.id.call_Driver);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -208,10 +207,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(isPermissionGranted())
-            {
-                callAction();
-            }
+                if (isPermissionGranted()) {
+                    callAction();
+                }
             }
         });
 
@@ -371,6 +369,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                                         map.put("destinationLat", destinationLatLng.latitude);
                                         map.put("destinationLng", destinationLatLng.longitude);
                                         driverRef.updateChildren(map);
+                                       confirmationMessage();
                                         startTracking();
                                         getDriverLocation();
                                         getDriverInfo();
@@ -418,6 +417,26 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         }
 
 
+    }
+
+    void confirmationMessage()
+    {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(CustomerMapActivity.this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(CustomerMapActivity.this);
+        }
+        builder.setTitle("Driver is on the way!")
+                .setMessage("Your Captain is on the way to pick you up")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                    }
+                })
+
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     /*-------------------------------------------- Map specific functions -----
@@ -629,8 +648,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         // displayDriversOnMap();
 
 
-
-
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -681,7 +698,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
 
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -807,21 +823,21 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         }
         startActivity(callIntent);
     }
-    public  boolean isPermissionGranted() {
+
+    public boolean isPermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.CALL_PHONE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v("TAG","Permission is granted");
+                Log.v("TAG", "Permission is granted");
                 return true;
             } else {
 
-                Log.v("TAG","Permission is revoked");
+                Log.v("TAG", "Permission is revoked");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 1);
                 return false;
             }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v("TAG","Permission is granted");
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("TAG", "Permission is granted");
             return true;
         }
     }
@@ -985,7 +1001,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 //    }
 
 
-
 //    private void loadAllAvailableDriver(final LatLng location) {
 //
 //        //First we need to delete all markers on map
@@ -1046,8 +1061,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 //            }
 //        });
 //    }
-
-
 
 
 }
