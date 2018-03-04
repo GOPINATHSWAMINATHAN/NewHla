@@ -1,6 +1,5 @@
-package com.hlacab.hla;
+package com.hlacab.hla.activities;
 
-import android.*;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,14 +16,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.Manifest;
-import android.os.Handler;
-import android.os.ResultReceiver;
-import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -46,10 +40,7 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
-import com.google.android.gms.ads.internal.gmsg.HttpClient;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
@@ -57,7 +48,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -77,23 +67,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.SphericalUtil;
+import com.hlacab.hla.R;
+import com.hlacab.hla.extras.ChoosePayment;
 import com.teliver.sdk.core.Teliver;
 import com.teliver.sdk.models.MarkerOption;
 import com.teliver.sdk.models.TrackingBuilder;
-import com.teliver.sdk.models.TripBuilder;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -113,6 +96,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private LinearLayout mDriverInfo;
     Button tripCancel;
     String name;
+    String driverImageUrl;
     private ImageView mDriverProfileImage;
     private TextView mDriverName, mDriverPhone, mDriverCar;
     private RadioGroup mRadioGroup;
@@ -135,7 +119,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_costumer_map);
+        setContentView(com.hlacab.hla.R.layout.activity_costumer_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -369,7 +353,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                                         map.put("destinationLat", destinationLatLng.latitude);
                                         map.put("destinationLng", destinationLatLng.longitude);
                                         driverRef.updateChildren(map);
-                                       confirmationMessage();
+                                        confirmationMessage();
                                         startTracking();
                                         getDriverLocation();
                                         getDriverInfo();
@@ -419,14 +403,14 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
     }
 
-    void confirmationMessage()
-    {
+    void confirmationMessage() {
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder = new AlertDialog.Builder(CustomerMapActivity.this, android.R.style.Theme_Material_Dialog_Alert);
         } else {
             builder = new AlertDialog.Builder(CustomerMapActivity.this);
         }
+
         builder.setTitle("Driver is on the way!")
                 .setMessage("Your Captain is on the way to pick you up")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -437,6 +421,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+
     }
 
     /*-------------------------------------------- Map specific functions -----
@@ -486,6 +471,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     float distance = loc1.distanceTo(loc2) / 0.62137f;
                     Toast.makeText(getApplicationContext(), "Distance is " + distance, Toast.LENGTH_LONG).show();
                     if (distance < 100) {
+                        tripCancel.setVisibility(View.GONE);
                         mRequest.setEnabled(false);
                         mRequest.setText("Driver's Here");
                     } else {
@@ -532,6 +518,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         mDriverCar.setText(dataSnapshot.child("car").getValue().toString());
                     }
                     if (dataSnapshot.child("profileImageUrl") != null) {
+                        driverImageUrl = dataSnapshot.child("profileImageUrl").getValue().toString();
+
                         Glide.with(getApplication()).load(dataSnapshot.child("profileImageUrl").getValue().toString()).into(mDriverProfileImage);
                     } else {
                         Drawable res = getResources().getDrawable(R.drawable.driver);

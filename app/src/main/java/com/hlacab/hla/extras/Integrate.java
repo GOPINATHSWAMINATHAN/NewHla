@@ -1,4 +1,4 @@
-package com.hlacab.hla;
+package com.hlacab.hla.extras;
 
 import android.app.Application;
 
@@ -14,6 +14,6 @@ public class Integrate extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Teliver.init(this,"400a7757cea37d9c1276da89bc863470");
+        Teliver.init(this, "400a7757cea37d9c1276da89bc863470");
     }
 }

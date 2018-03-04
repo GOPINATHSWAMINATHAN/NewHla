@@ -1,4 +1,4 @@
-package com.hlacab.hla;
+package com.hlacab.hla.utils;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
+import com.hlacab.hla.R;
 
 import java.io.IOException;
 import java.util.ArrayList;

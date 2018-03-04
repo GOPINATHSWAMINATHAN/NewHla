@@ -1,7 +1,6 @@
-package com.hlacab.hla;
+package com.hlacab.hla.activities;
 
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,16 +19,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.hlacab.hla.R;
 
 import java.util.Calendar;
 
 public class RideLater extends AppCompatActivity {
-PlaceAutocompleteFragment pickup,destination;
-EditText time;
-Button request;
+    PlaceAutocompleteFragment pickup, destination;
+    EditText time;
+    Button request;
     String request_time;
-LatLng destinationLatLng,pickupLatLng;
-String destination_text,pickup_text;
+    LatLng destinationLatLng, pickupLatLng;
+    String destination_text, pickup_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +40,10 @@ String destination_text,pickup_text;
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
 
-        destination=(PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_two);
+        destination = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment_two);
 
-        time=(EditText)findViewById(R.id.time_picker);
-request=(Button)findViewById(R.id.ride_later_request);
+        time = (EditText) findViewById(R.id.time_picker);
+        request = (Button) findViewById(R.id.ride_later_request);
 
 
         time.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +62,7 @@ request=(Button)findViewById(R.id.ride_later_request);
                                                   int minute) {
 
                                 time.setText(hourOfDay + ":" + minute);
-                                request_time=hourOfDay+":"+minute;
+                                request_time = hourOfDay + ":" + minute;
                             }
                         }, hour, minute, false);
                 timePickerDialog.show();

@@ -1,4 +1,4 @@
-package com.hlacab.hla;
+package com.hlacab.hla.utils;
 
 import android.app.Service;
 import android.content.Intent;
@@ -27,10 +27,8 @@ public class onAppKilled extends Service {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("driversAvailable");
             GeoFire geoFire = new GeoFire(ref);
             geoFire.removeLocation(userId);
-        }
-        catch(Exception e)
-        {
-            Toast.makeText(getApplicationContext(),"Something problem occured!",Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Something problem occured!", Toast.LENGTH_LONG).show();
         }
 
     }

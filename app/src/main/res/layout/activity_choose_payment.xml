@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ff8d5c"
-    tools:context="com.hlacab.hla.ChoosePayment">
+    tools:context="com.hlacab.hla.extras.ChoosePayment">
 
 
     <android.support.v7.widget.CardView

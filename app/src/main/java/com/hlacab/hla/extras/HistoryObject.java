@@ -1,10 +1,10 @@
-package com.hlacab.hla;
+package com.hlacab.hla.extras;
 
 /**
  * Created by manel on 10/10/2017.
  */
 
-public class HistoryObject {
+public class  HistoryObject {
     private String rideId;
     private String time;
 

@@ -1,4 +1,4 @@
-package com.hlacab.hla;
+package com.hlacab.hla.adapters;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,14 +6,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.hlacab.hla.R;
+import com.hlacab.hla.activities.HistorySingleActivity;
+
 /**
  * Created by manel on 10/10/2017.
  */
 
-public class HistoryViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener{
+public class HistoryViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView rideId;
     public TextView time;
+
     public HistoryViewHolders(View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);

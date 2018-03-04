@@ -38,6 +38,7 @@ dependencies {
     compile 'com.github.ar-android:DrawRouteMaps:1.0.0'
     compile 'com.paypal.sdk:paypal-android-sdk:2.15.3'
     testImplementation 'junit:junit:4.12'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.teliver.sdk:TeliverSdk:1.0.17'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

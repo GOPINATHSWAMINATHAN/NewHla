@@ -1,4 +1,4 @@
-package com.hlacab.hla;
+package com.hlacab.hla.activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -15,6 +15,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hlacab.hla.adapters.HistoryAdapter;
+import com.hlacab.hla.extras.HistoryObject;
+import com.hlacab.hla.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,7 +55,7 @@ public class HistoryActivity extends AppCompatActivity {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getUserHistoryIds();
 
-        if(customerOrDriver.equals("Drivers")){
+        if (customerOrDriver.equals("Drivers")) {
             mBalance.setVisibility(View.VISIBLE);
         }
     }
@@ -62,12 +65,13 @@ public class HistoryActivity extends AppCompatActivity {
         userHistoryDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    for(DataSnapshot history : dataSnapshot.getChildren()){
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot history : dataSnapshot.getChildren()) {
                         FetchRideInformation(history.getKey());
                     }
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -80,18 +84,18 @@ public class HistoryActivity extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     String rideId = dataSnapshot.getKey();
                     Long timestamp = 0L;
                     String distance = "";
                     Double ridePrice = 0.0;
 
-                    if(dataSnapshot.child("timestamp").getValue() != null){
+                    if (dataSnapshot.child("timestamp").getValue() != null) {
                         timestamp = Long.valueOf(dataSnapshot.child("timestamp").getValue().toString());
                     }
 
-                    if(dataSnapshot.child("customerPaid").getValue() != null && dataSnapshot.child("driverPaidOut").getValue() == null){
-                        if(dataSnapshot.child("distance").getValue() != null){
+                    if (dataSnapshot.child("customerPaid").getValue() != null && dataSnapshot.child("driverPaidOut").getValue() == null) {
+                        if (dataSnapshot.child("distance").getValue() != null) {
                             distance = dataSnapshot.child("distance").getValue().toString();
                             ridePrice = (Double.valueOf(distance) * 0.4);
                             Balance += ridePrice;
@@ -105,6 +109,7 @@ public class HistoryActivity extends AppCompatActivity {
                     mHistoryAdapter.notifyDataSetChanged();
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -113,12 +118,13 @@ public class HistoryActivity extends AppCompatActivity {
 
     private String getDate(Long time) {
         Calendar cal = Calendar.getInstance(Locale.getDefault());
-        cal.setTimeInMillis(time*1000);
+        cal.setTimeInMillis(time * 1000);
         String date = DateFormat.format("MM-dd-yyyy hh:mm", cal).toString();
         return date;
     }
 
     private ArrayList resultsHistory = new ArrayList<HistoryObject>();
+
     private ArrayList<HistoryObject> getDataSetHistory() {
         return resultsHistory;
     }

@@ -1,10 +1,13 @@
-package com.hlacab.hla;
+package com.hlacab.hla.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.hlacab.hla.extras.HistoryObject;
+import com.hlacab.hla.R;
 
 import java.util.List;
 

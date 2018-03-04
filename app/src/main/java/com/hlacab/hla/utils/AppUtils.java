@@ -1,4 +1,4 @@
-package com.hlacab.hla;
+package com.hlacab.hla.utils;
 
 import android.content.Context;
 import android.os.Build;

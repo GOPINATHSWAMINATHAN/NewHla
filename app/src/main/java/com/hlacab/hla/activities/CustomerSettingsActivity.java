@@ -1,4 +1,4 @@
-package com.hlacab.hla;
+package com.hlacab.hla.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.hlacab.hla.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
